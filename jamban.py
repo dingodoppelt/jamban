@@ -95,7 +95,6 @@ if __name__ == "__main__":
     parser.add_argument("--unban", "-u", action='store_true', help="select addresses to unban from the server")
     parser.add_argument("--unbanAll", action='store_true', help="unban all currently banned clients")
     args = parser.parse_args()
-    print(args.timeout)
     if args.unbanAll:
         print("Unbanning all currently banned clients...")
         unbanAll(getBannedIPs())
