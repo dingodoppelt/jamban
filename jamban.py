@@ -45,14 +45,12 @@ def selection(clients):
         exit()
     if (choice < 1 or choice > valid_range ):
         print("Invalid selection... aborting")
-        exit()
     else:
         optout = input("Are you sure to apply the action to " + clients[choice][1] + "? (Y/n): ")
         if ( optout == "Y" ):
             return choice
         else:
             print("Cancelled by user")
-            exit()
 
 def getConClients(action):
     if (action == 'add' ):
@@ -67,7 +65,6 @@ def getConClients(action):
                 return clientDict
         else:
             print("No CSV File found... exiting")
-            exit()
     else:
         return getBannedIPs()
 
@@ -77,11 +74,9 @@ def Menu(action):
         print("Select entry to <" + action + ">:")
         for x in clientDict:
             print( str(x) + ": " + clientDict[x][0] + " (" + clientDict[x][1] + ")" )
-        auswahl = selection(clientDict)
-        clientAction(clientDict[auswahl][1], action)
+        clientAction(clientDict[selection(clientDict)][1], action)
     else:
         print("No entries found... exiting")
-        exit()
 
 if __name__ == "__main__":
     class color:
@@ -97,9 +92,7 @@ if __name__ == "__main__":
     if args.unbanAll:
         print("Unbanning all currently banned clients...")
         unbanAll(getBannedIPs())
-        exit()
     if args.unban:
         Menu('delete')
-        exit()
-    Menu('add')
-    exit()
+    else:
+        Menu('add')
