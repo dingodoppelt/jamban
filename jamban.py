@@ -29,8 +29,8 @@ def getBannedIPs():
     i=0
     clientDict={}
     cmd = "sudo nft list set " + args.banset
-    cmdOutput = subprocess.getoutput(cmd)
-    IPs = re.findall(r'\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b', cmdOutput)
+    cmdOutput = subprocess.check_output(cmd, shell=True)
+    IPs = re.findall(r'\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b', str(cmdOutput))
     for x in IPs:
         i+=1
         clientDict.update({ i: [ '', x ] })
@@ -92,7 +92,7 @@ if __name__ == "__main__":
     if args.unbanAll:
         print("Unbanning all currently banned clients...")
         unbanAll(getBannedIPs())
-    if args.unban:
+    elif args.unban:
         Menu('delete')
     else:
         Menu('add')
