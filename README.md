@@ -7,15 +7,15 @@ example configurations for nftables: (sudo nft -f ruleset.nft)
 \#1:
 ```
 flush ruleset
-add     table   firewall
-add     chain   firewall input          { type filter hook input priority 0 ; policy accept; }
-add     set     firewall JamulusBans    { type ipv4_addr; flags timeout; size 4096; }
-add     rule    firewall input          ip saddr @JamulusBans counter drop
+add     table   ip       jamban
+add     chain   jamban   input          { type filter hook input priority 0 ; policy accept; }
+add     set     jamban   banset         { type ipv4_addr; flags timeout; size 4096; }
+add     rule    jamban   input          ip saddr @banset counter drop
 ```
 \#2:
 ```
-table ip firewall {
-        set JamulusBans {
+table ip jamban {
+        set banset {
                 type ipv4_addr
                 size 4096
                 flags timeout
@@ -23,7 +23,7 @@ table ip firewall {
 
         chain input {
                 type filter hook input priority filter; policy accept;
-                ip saddr @JamulusBans counter drop
+                ip saddr @banset counter drop
         }
 }
 ```
