@@ -8,9 +8,8 @@ import sys
 from argparse import RawTextHelpFormatter
 
 def getTimeOut(action):
-    if (action == 'delete') or (args.timeout == 'permban'):
-        timeOut = ''
-    else:
+    timeOut = ''
+    if (action == 'add') and (args.timeout != 'permban'):
         timeOut = " timeout " + args.timeout
     return timeOut
 
