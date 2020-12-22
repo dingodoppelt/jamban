@@ -37,13 +37,12 @@ def getBannedIPs():
     return clientDict
 
 def selection(clients):
-    valid_range=len(clients)
     try:
-        choice = int(input("Select entry (1 - " + str(valid_range) + ") or any other character to abort: "))
+        choice = int(input("Select entry (1 - " + str(len(clients)) + ") or any other character to abort: "))
     except ValueError:
         print("Not an integer... aborting")
         exit()
-    if (choice < 1 or choice > valid_range ):
+    if (choice < 1 or choice > len(clients) ):
         print("Invalid selection... aborting")
     else:
         optout = input("Are you sure to apply the action to " + clients[choice][1] + "? (Y/n): ")
@@ -51,6 +50,7 @@ def selection(clients):
             return choice
         else:
             print("Cancelled by user")
+            exit()
 
 def getConClients(action):
     if (action == 'add' ):
