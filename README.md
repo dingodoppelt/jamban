@@ -54,5 +54,3 @@ table ip jamban {
 ```
 
 - CAUTION: the example configurations *can* break existing rulesets for nftables.
-
-see "jamban.py --help" for more information
