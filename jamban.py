@@ -15,11 +15,8 @@ def getTimeOut(action):
 
 def clientAction(client, action):
     cmd = "sudo nft " + action + " element " + args.banset + " { " + client + getTimeOut(action) + " }"
-    errno = subprocess.call(cmd, shell=True)
-    if (errno == 0):
-        print("Action <" + action + "> on " + client + " was successful")
-    else:
-        print("Action <" + action + "> on " + client + " failed")
+    if not subprocess.call(cmd, shell=True):
+        print(color.GREEN + "[SUCCESS]: " + color.END + args.banset + ": " + action + " element " + color.BOLD + client + color.END)
 
 def unbanAll(clients):
     for IP in clients:
@@ -36,50 +33,55 @@ def getBannedIPs():
         clientDict.update({ i: [ '', x ] })
     return clientDict
 
-def selection(clients):
-    try:
-        choice = int(input("\nSelect entry " + color.BOLD + "(1 - " + str(len(clients)) + ")" + color.END + " or any other character to abort: "))
-    except ValueError:
-        print("Not an integer... aborting")
-        exit()
-    if (choice < 1 or choice > len(clients) ):
-        print("Invalid selection... aborting")
+def getCSVFile():
+    if (os.path.isfile(args.csvfile)):
+        with open(args.csvfile) as csv_file:
+            i=0
+            clientDict={}
+            csv_reader = csv.DictReader(csv_file, delimiter=';')
+            for row in csv_reader:
+                i+=1
+                clientDict.update({ i: [ row['name'], row['ip'] ] })
+            return clientDict
     else:
-        optout = input("Are you sure to apply the action to " + clients[choice][1] + "? (Y/n): ")
-        if ( optout == "Y" ):
-            return choice
-        else:
-            print("Cancelled by user")
-            exit()
+        print("No CSV File found... exiting")
 
-def getConClients(action):
+def getClients(action):
     if (action == 'add' ):
-        if (os.path.isfile(args.csvfile)):
-            with open(args.csvfile) as csv_file:
-                i=0
-                clientDict={ }
-                csv_reader = csv.DictReader(csv_file, delimiter=';')
-                for row in csv_reader:
-                    i+=1
-                    clientDict.update({ i: [ row['name'], row['ip'] ] })
-                return clientDict
-        else:
-            print("No CSV File found... exiting")
+        return getCSVFile()
     else:
         return getBannedIPs()
 
-def Menu(action):
-    clientDict = getConClients(action)
+def drawMenu(clientDict):
+    for x in clientDict:
+            print((color.BOLD + "  {0:>2}: {1}" + color.END + " ({2})").format(str(x), clientDict[x][0], clientDict[x][1]))
+
+def menu(action):
+    clientDict = getClients(action)
     if ( clientDict ):
         print("Select entry to <" + action + ">:\n")
-        for x in clientDict:
-            print((color.BOLD + "{0:>2}: {1}" + color.END + " ({2})").format(str(x), clientDict[x][0], clientDict[x][1]))
-        clientAction(clientDict[selection(clientDict)][1], action)
+        drawMenu(clientDict)
+        try:
+            choice = int(input("\nSelect entry " + color.BOLD + "(1 - " + str(len(clientDict)) + ")" + color.END + " or any other character to abort: "))
+        except ValueError:
+            print("Not an integer... aborting")
+            exit()
+        if choice not in range(1, len(clientDict) + 1):
+            print("Invalid selection... aborting")
+        else:
+            optout = input("Are you sure to apply the action <" + action + "> to " + color.BOLD + clientDict[choice][1] + color.END + "? (Y/n): ")
+            if ( optout == "Y" ):
+                clientAction(clientDict[choice][1], action)
+            else:
+                print("Cancelled by user")
+                exit()
     else:
         print("No entries found... exiting")
 
 if __name__ == "__main__":
     class color:
+        GREEN = '\033[92m'
+        RED = '\033[91m'
         BOLD = '\033[1m'
         UNDERLINE = '\033[4m'
         END = '\033[0m'
@@ -94,6 +96,6 @@ if __name__ == "__main__":
         print("Unbanning all currently banned clients...")
         unbanAll(getBannedIPs())
     elif args.unban:
-        Menu('delete')
+        menu('delete')
     else:
-        Menu('add')
+        menu('add')
