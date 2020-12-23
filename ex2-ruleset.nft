@@ -1,0 +1,12 @@
+table ip jamban {
+        set banset {
+                type ipv4_addr
+                size 4096
+                flags timeout
+        }
+
+        chain input {
+                type filter hook input priority filter; policy accept;
+                ip saddr @banset counter drop
+        }
+}

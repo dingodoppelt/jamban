@@ -1,0 +1,5 @@
+flush ruleset
+add     table   ip       jamban
+add     chain   jamban   input          { type filter hook input priority 0 ; policy accept; }
+add     set     jamban   banset         { type ipv4_addr; flags timeout; size 4096; }
+add     rule    jamban   input          ip saddr @banset counter drop
