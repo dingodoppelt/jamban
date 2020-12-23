@@ -38,7 +38,7 @@ def getBannedIPs():
 
 def selection(clients):
     try:
-        choice = int(input("Select entry (1 - " + str(len(clients)) + ") or any other character to abort: "))
+        choice = int(input("\nSelect entry " + color.BOLD + "(1 - " + str(len(clients)) + ")" + color.END + " or any other character to abort: "))
     except ValueError:
         print("Not an integer... aborting")
         exit()
@@ -71,15 +71,16 @@ def getConClients(action):
 def Menu(action):
     clientDict = getConClients(action)
     if ( clientDict ):
-        print("Select entry to <" + action + ">:")
+        print("Select entry to <" + action + ">:\n")
         for x in clientDict:
-            print( str(x) + ": " + clientDict[x][0] + " (" + clientDict[x][1] + ")" )
+            print((color.BOLD + "{0:>2}: {1}" + color.END + " ({2})").format(str(x), clientDict[x][0], clientDict[x][1]))
         clientAction(clientDict[selection(clientDict)][1], action)
     else:
         print("No entries found... exiting")
 
 if __name__ == "__main__":
     class color:
+        BOLD = '\033[1m'
         UNDERLINE = '\033[4m'
         END = '\033[0m'
     parser = argparse.ArgumentParser(description="This script uses nftables to ban clients from patched Jamulus servers.\nGet the patched server @ " + color.UNDERLINE + "https://github.com/dingodoppelt/jamulus/tree/logging" + color.END + "\nmake sure nftables is installed and has a basic ruleset loaded to which you can add your JamulusBans set.\n\n" + color.UNDERLINE + "example for creating a basic nftables configuration:" + color.END + "\n\t\"sudo nft add table firewall\"\n\t\"sudo nft add chain firewall input\"\n\t\"sudo nft add set firewall JamulusBans { type ipv4_addr\\; size 1024\\; flags timeout\\; }\"\n\t\"sudo nft add rule firewall input ip saddr @JamulusBans drop\"", formatter_class=RawTextHelpFormatter)
