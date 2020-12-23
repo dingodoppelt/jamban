@@ -6,7 +6,6 @@ included example configurations for nftables:
 
 \#1:  (sudo nft -f ex1-ruleset.nft)
 ```
-flush ruleset
 add     table   ip       jamban
 add     chain   jamban   input          { type filter hook input priority 0 ; policy accept; }
 add     set     jamban   banset         { type ipv4_addr; flags timeout; size 4096; }
@@ -28,6 +27,6 @@ table ip jamban {
 }
 ```
 
-CAUTION: the example configurations overwrite existing rulesets for nftables
+- CAUTION: the example configurations can break existing rulesets for nftables.
 
 see "jamban.py --help" for more information
