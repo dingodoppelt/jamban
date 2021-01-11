@@ -3,7 +3,7 @@ This script works in conjunction with a [patched Jamulus server](https:/dingodop
 and [nftables](https://www.nftables.org/) to kickban users by IP.
 
 ## requirements
-1. start the Jamulus server with the command line option "-m /tmp/JamulusClients.csv" to make the clients visible to jamban
+1. start the Jamulus server with the command line option "--csvfile /tmp/JamulusClients.csv" to make the clients visible to jamban
 1. configure nftables to contain a table, chain and set visible to jamban (see "jamban.py --help" for defaults or below for examples)
 #
 - output of "jamban.py --help":
