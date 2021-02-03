@@ -6,7 +6,7 @@ table ip jamban {
         }
 
         chain input {
-                type filter hook input priority filter; policy accept;
+                type filter hook input priority -1; policy accept;
                 ip saddr @banset counter drop
         }
 }
