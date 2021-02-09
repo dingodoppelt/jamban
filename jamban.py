@@ -22,6 +22,12 @@ def unbanAll(clients):
     for IP in clients:
         clientAction(clients[IP][1], 'delete')
 
+def banListeners():
+    listeners = getClients('add')
+    for x in listeners:
+        if (listeners[x][2] == 'Listener'):
+            clientAction(listeners[x][1], 'add')
+    
 def getBannedIPs():
     i=0
     clientDict={}
@@ -41,7 +47,7 @@ def getCSVFile():
             csv_reader = csv.DictReader(csv_file, delimiter=';')
             for row in csv_reader:
                 i+=1
-                clientDict.update({ i: [ row['name'], row['ip'] ] })
+                clientDict.update({ i: [ row['name'], row['ip'], row['instrument'] ] })
             return clientDict
     else:
         print("No CSV File found... exiting")
@@ -70,7 +76,7 @@ def menu(action):
             print("Invalid selection... aborting")
         else:
             optout = input("Are you sure to apply the action <" + action + "> to " + color.BOLD + clientDict[choice][1] + color.END + "? (Y/n): ")
-            if ( optout == "Y" ):
+            if ( optout == 'Y' ):
                 clientAction(clientDict[choice][1], action)
             else:
                 print("Cancelled by user")
@@ -91,11 +97,14 @@ if __name__ == "__main__":
     parser.add_argument("--banset", "-s", default="ip jamban banset", help="set the name of the set to be used for the nftables blacklist (default: ip jamban banset)")
     parser.add_argument("--unban", "-u", action='store_true', help="select addresses to unban from the server")
     parser.add_argument("--unbanAll", action='store_true', help="unban all currently banned clients")
+    parser.add_argument("--banListeners", "-L", action='store_true', help="ban all current listeners")
     args = parser.parse_args()
     if args.unbanAll:
         print("Unbanning all currently banned clients...")
         unbanAll(getBannedIPs())
     elif args.unban:
         menu('delete')
+    elif args.banListeners:
+        banListeners()
     else:
         menu('add')
