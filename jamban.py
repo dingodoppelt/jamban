@@ -22,7 +22,8 @@ def unbanAll(clients):
     for IP in clients:
         clientAction(clients[IP][1], 'delete')
 
-def banListeners():
+def kickListeners():
+    args.timeout = '60s'
     listeners = getClients('add')
     for x in listeners:
         if (listeners[x][2] == 'Listener'):
@@ -97,14 +98,14 @@ if __name__ == "__main__":
     parser.add_argument("--banset", "-s", default="ip jamban banset", help="set the name of the set to be used for the nftables blacklist (default: ip jamban banset)")
     parser.add_argument("--unban", "-u", action='store_true', help="select addresses to unban from the server")
     parser.add_argument("--unbanAll", action='store_true', help="unban all currently banned clients")
-    parser.add_argument("--banListeners", "-L", action='store_true', help="ban all current listeners")
+    parser.add_argument("--kickListeners", "-L", action='store_true', help="kick all current listeners")
     args = parser.parse_args()
     if args.unbanAll:
         print("Unbanning all currently banned clients...")
         unbanAll(getBannedIPs())
     elif args.unban:
         menu('delete')
-    elif args.banListeners:
-        banListeners()
+    elif args.kickListeners:
+        kickListeners()
     else:
         menu('add')

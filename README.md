@@ -8,7 +8,7 @@ and [nftables](https://www.nftables.org/) to kickban users by IP.
 #
 - output of "jamban.py --help":
 ```
-usage: jamban.py [-h] [--timeout [TIMEOUT]] [--csvfile CSVFILE] [--banset BANSET] [--unban] [--unbanAll] [--banListeners]
+usage: jamban.py [-h] [--timeout [TIMEOUT]] [--csvfile CSVFILE] [--banset BANSET] [--unban] [--unbanAll] [--kickListeners]
 
 This script uses nftables to ban clients from patched Jamulus servers.
 Get the patched server @ https://github.com/dingodoppelt/jamulus/tree/logging
@@ -26,7 +26,7 @@ optional arguments:
                         set the name of the set to be used for the nftables blacklist (default: ip jamban banset)
   --unban, -u           select addresses to unban from the server
   --unbanAll            unban all currently banned clients
-  --banListeners, -L    ban all current listeners
+  --kickListeners, -L   kick all current listeners
 ```
 #
 - included example configurations for nftables:
