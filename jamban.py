@@ -28,6 +28,23 @@ def kickListeners():
     for x in listeners:
         if (listeners[x][2] == 'Listener'):
             clientAction(listeners[x][1], 'add')
+
+def listClients():
+    metadata = ''
+    clients = getCSVFile()
+    for x in clients :
+        if clients[x][4] != "Streamer" and clients[x][4] != "Recorder" :
+            if clients[x][0] != "" :
+                metadata += clients[x][0]
+            if clients[x][4] != "-" :
+                metadata += "(" + clients[x][4] + ")"
+            if clients[x][3] != "-" :
+                metadata += "+from+" + clients[x][3].replace("United Kingdom", "UK").replace("United States","USA")
+            metadata += ",+"
+    metadata = ' '.join(metadata.split()).replace(" ","+")
+    if metadata == "" :
+        metadata = "waiting+for+musicians....."
+    print(metadata[:len(metadata) - 2])
     
 def getBannedIPs():
     i=0
