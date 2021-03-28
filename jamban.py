@@ -48,7 +48,7 @@ def getCSVFile():
             csv_reader = csv.DictReader(csv_file, delimiter=';')
             for row in csv_reader:
                 i+=1
-                clientDict.update({ i: [ row['name'], row['ip'], row['instrument'] ] })
+                clientDict.update({ i: [ row['name'], row['ip'], row['city'], row['country'], row['instrument'], row['instrumentPicture'], row['skill'] ] })
             return clientDict
     else:
         print("No CSV File found... exiting")
