@@ -116,6 +116,7 @@ if __name__ == "__main__":
     parser.add_argument("--unban", "-u", action='store_true', help="select addresses to unban from the server")
     parser.add_argument("--unbanAll", action='store_true', help="unban all currently banned clients")
     parser.add_argument("--kickListeners", "-L", action='store_true', help="kick all current listeners")
+    parser.add_argument("--list", "-l", action='store_true', help="list clients as metadata input to icecast")
     args = parser.parse_args()
     if args.unbanAll:
         print("Unbanning all currently banned clients...")
@@ -124,5 +125,7 @@ if __name__ == "__main__":
         menu('delete')
     elif args.kickListeners:
         kickListeners()
+    elif args.list:
+        listClients()
     else:
         menu('add')
