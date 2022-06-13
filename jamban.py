@@ -6,6 +6,8 @@ import re
 import argparse
 import sys
 from argparse import RawTextHelpFormatter
+import socket
+import json
 
 def getTimeOut(action):
     timeOut = ''
@@ -31,7 +33,7 @@ def kickListeners():
 
 def listClients():
     metadata = ''
-    clients = getCSVFile()
+    clients = getClientsFromRPC()
     for x in clients :
         if clients[x][4] != "Streamer" and clients[x][4] != "Recorder" :
             if clients[x][0] != "" :
@@ -57,22 +59,35 @@ def getBannedIPs():
         clientDict.update({ i: [ '', x ] })
     return clientDict
 
-def getCSVFile():
-    if (os.path.isfile(args.csvfile)):
-        with open(args.csvfile) as csv_file:
-            i=0
-            clientDict={}
-            csv_reader = csv.DictReader(csv_file, delimiter=';')
-            for row in csv_reader:
-                i+=1
-                clientDict.update({ i: [ row['name'], row['ip'], row['city'], row['country'], row['instrument'], row['instrumentPicture'], row['skill'] ] })
-            return clientDict
-    else:
-        print("No CSV File found... exiting")
+def getClientsFromRPC():
+    with open("config.json") as json_config_file:
+        config = json.load(json_config_file)
+    rpcHost = "localhost"
+    rpcPort = config['rpcPort']
+    rpcSecretFilePath = config['rpcSecretFilePath']
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        if (os.path.isfile(rpcSecretFilePath)):
+            with open(rpcSecretFilePath) as secret:
+                secret = secret.read()
+                s.connect((rpcHost, rpcPort))
+                authRequest = bytes('{"id":"Auth","jsonrpc":"2.0","method":"jamulus/apiAuth","params":{"secret": "' + secret.rstrip() + '"}}\n', encoding='utf-8')
+                s.sendall(authRequest)
+                ackn = s.recv(1024).decode('utf-8')
+                if (ackn == '{"id":"Auth","jsonrpc":"2.0","result":"ok"}\n'):
+                    s.sendall(b'{"id":"Clients","jsonrpc":"2.0","method":"jamulusserver/getCompleteClientInfo","params":{}}\n')
+                    dictParsed = json.loads(s.recv(1024))['result']['clients']
+                    clientDict={}
+                    i=0
+                    for client in dictParsed:
+                        clientDict.update({ i: [ client['name'], client['address'].split(':')[0], client['city'], client['country'], client['instr'], client['instrpic'], client['skill'] ] })
+                        i+=1
+                    return clientDict
+        else:
+            print("No CSV File found... exiting")
 
 def getClients(action):
     if (action == 'add' ):
-        return getCSVFile()
+        return getClientsFromRPC()
     else:
         return getBannedIPs()
 
