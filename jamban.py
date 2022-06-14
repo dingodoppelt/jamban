@@ -78,7 +78,7 @@ def getClientsFromRPC():
                     s.sendall(b'{"id":"Clients","jsonrpc":"2.0","method":"jamulusserver/getCompleteClientInfo","params":{}}\n')
                     dictParsed = json.loads(s.recv(1024))['result']['clients']
                     clientDict={}
-                    i=0
+                    i=1
                     for client in dictParsed:
                         clientDict.update({ i: [ client['name'], client['address'].split(':')[0], client['city'], client['country'], client['instr'], client['instrpic'], client['skill'] ] })
                         i+=1
