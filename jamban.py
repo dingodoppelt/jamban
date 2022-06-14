@@ -60,7 +60,8 @@ def getBannedIPs():
     return clientDict
 
 def getClientsFromRPC():
-    with open("config.json") as json_config_file:
+    __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+    with open(os.path.join(__location__, 'config.json')) as json_config_file:
         config = json.load(json_config_file)
     rpcHost = "localhost"
     rpcPort = config['rpcPort']
