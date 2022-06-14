@@ -47,7 +47,7 @@ def listClients():
     if metadata == "" :
         metadata = "waiting+for+musicians....."
     print(metadata[:len(metadata) - 2])
-    
+
 def getBannedIPs():
     i=0
     clientDict={}
@@ -60,7 +60,7 @@ def getBannedIPs():
     return clientDict
 
 def getClientsFromRPC():
-    __location__ = os.readlink(os.path.realpath(__file__))
+    __location__ = os.path.dirname(os.readlink(os.path.abspath(__file__)))
     with open(os.path.join(__location__, 'config.json')) as json_config_file:
         config = json.load(json_config_file)
     rpcHost = "localhost"
