@@ -76,7 +76,7 @@ def getClientsFromRPC():
                 ackn = s.recv(1024).decode('utf-8')
                 if (ackn == '{"id":"Auth","jsonrpc":"2.0","result":"ok"}\n'):
                     s.sendall(b'{"id":"Clients","jsonrpc":"2.0","method":"jamulusserver/getCompleteClientInfo","params":{}}\n')
-                    dictParsed = json.loads(s.recv(1024))['result']['clients']
+                    dictParsed = json.loads(s.recv(16384))['result']['clients']
                     clientDict={}
                     i=1
                     for client in dictParsed:
