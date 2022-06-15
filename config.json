@@ -1,0 +1,4 @@
+{
+"rpcPort": 8765,
+"rpcSecretFilePath": "/var/opt/jamulusRPCsecret.txt"
+}
