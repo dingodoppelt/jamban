@@ -35,7 +35,7 @@ def kickNoNames():
     args.timeout = '60s'
     listeners = getClients('add')
     for x in listeners:
-        if (listeners[x][2] == 'No Name'):
+        if (listeners[x][4] == 'No Name'):
             clientAction(listeners[x][1], 'add')
 
 def listClients():
