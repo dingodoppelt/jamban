@@ -159,7 +159,7 @@ if __name__ == "__main__":
         BOLD = '\033[1m'
         UNDERLINE = '\033[4m'
         END = '\033[0m'
-    parser = argparse.ArgumentParser(description="This script uses nftables to ban clients from patched Jamulus servers.\nGet the patched server @ " + color.UNDERLINE + "https://github.com/dingodoppelt/jamulus/tree/rpc_additions" + color.END + "\n\n\tMake sure nftables is installed and has a basic ruleset loaded to which you can add your banset.\n\tSee the included example configurations for nftables (ex*-ruleset.nft)", formatter_class=RawTextHelpFormatter)
+    parser = argparse.ArgumentParser(description="This script uses nftables to ban clients from patched Jamulus servers.\nGet the patched server @ " + color.UNDERLINE + "https://github.com/dingodoppelt/jamulus/tree/release" + color.END + "\n\n\tMake sure nftables is installed and has a basic ruleset loaded to which you can add your banset.\n\tSee the included example configurations for nftables (ex*-ruleset.nft)", formatter_class=RawTextHelpFormatter)
     parser.add_argument("--timeout", "-t", nargs='?', const='permban', default='2h', help="set the default bantime, e.g. 30m, 1d, etc. or leave blank for permban (default: 2h)")
     parser.add_argument("--banset", "-s", default="ip jamban banset", help="set the name of the set to be used for the nftables blacklist (default: ip jamban banset)")
     parser.add_argument("--unban", "-u", action='store_true', help="select addresses to unban from the server")
