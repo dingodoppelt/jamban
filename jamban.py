@@ -70,10 +70,33 @@ def getBannedIPs():
         clientDict.update({ i: [ '', x ] })
     return clientDict
 
-def getClientsFromRPC():
-    __location__ = os.path.dirname(os.readlink(os.path.abspath(__file__)))
-    with open(os.path.join(__location__, 'config.json')) as json_config_file:
-        config = json.load(json_config_file)
+def getConfig(confFile):
+    __config__ = {}
+    if confFile:
+        try:
+            with open(confFile, 'r') as file:
+                for line in file:
+                    line = line.strip()
+                    if line.startswith('#') or not line:
+                        continue
+                    try:
+                        key, value = line.strip().split('=')
+                        if key == 'JSONRPCSECRETFILE':
+                            __config__['rpcSecretFilePath'] = value
+                        elif key == 'JSONRPCPORT':
+                            __config__['rpcPort'] = int(value)
+                    except ValueError:
+                        continue
+        except FileNotFoundError:
+            print(f"environment file {confFile} not found.")
+    else:
+        __location__ = os.path.dirname(os.readlink(os.path.abspath(__file__)))
+        with open(os.path.join(__location__, 'config.json')) as json_config_file:
+            __config__ = json.load(json_config_file)
+    return __config__
+
+def getClientsFromRPC(confFile):
+    config = getConfig(confFile)
     rpcHost = "localhost"
     rpcPort = config['rpcPort']
     rpcSecretFilePath = config['rpcSecretFilePath']
@@ -97,9 +120,9 @@ def getClientsFromRPC():
         else:
             print("No CSV File found... exiting")
 
-def getClients(action):
+def getClients(action, config):
     if (action == 'add' ):
-        return getClientsFromRPC()
+        return getClientsFromRPC(config)
     else:
         return getBannedIPs()
 
@@ -107,8 +130,8 @@ def drawMenu(clientDict):
     for x in clientDict:
             print((color.BOLD + "  {0:>2}: {1}" + color.END + " ({2})").format(str(x), clientDict[x][0], clientDict[x][1]))
 
-def menu(action):
-    clientDict = getClients(action)
+def menu(action, config):
+    clientDict = getClients(action, config)
     if ( clientDict ):
         print("Select entry to <" + action + ">:\n")
         drawMenu(clientDict)
@@ -145,12 +168,13 @@ if __name__ == "__main__":
     parser.add_argument("--kickNoNames", "-N", action='store_true', help="kick all clients named No Name")
     parser.add_argument("--list", "-l", action='store_true', help="list clients as metadata input to icecast")
     parser.add_argument("--listRaw", "-r", action='store_true', help="list raw client details")
+    parser.add_argument("--environmentfile", "-f", nargs='?', default=None, help="path to a systemd environment file containing JSONRPCPORT and JSONRPCSECRETFILE variables")
     args = parser.parse_args()
     if args.unbanAll:
         print("Unbanning all currently banned clients...")
         unbanAll(getBannedIPs())
     elif args.unban:
-        menu('delete')
+        menu('delete', None)
     elif args.kickListeners:
         kickListeners()
     elif args.kickNoNames:
@@ -160,4 +184,4 @@ if __name__ == "__main__":
     elif args.listRaw:
         listRawClients()
     else:
-        menu('add')
+        menu('add', args.environmentfile)
