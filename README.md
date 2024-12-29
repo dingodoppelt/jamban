@@ -8,26 +8,27 @@ and [nftables](https://www.nftables.org/) to kickban users by IP.
 #
 - output of "jamban.py --help":
 ```
-usage: jamban [-h] [--timeout [TIMEOUT]] [--banset BANSET] [--unban] [--unbanAll] [--kickListeners] [--kickNoNames] [--list] [--listRaw]
+usage: jamban [-h] [--timeout [TIMEOUT]] [--banset BANSET] [--unban] [--unbanAll] [--kickListeners] [--kickNoNames] [--list] [--listRaw] [--environmentfile [ENVIRONMENTFILE]]
 
 This script uses nftables to ban clients from patched Jamulus servers.
-Get the patched server @ https://github.com/dingodoppelt/jamulus/tree/rpc_additions
+Get the patched server @ https://github.com/dingodoppelt/jamulus/tree/release
 
         Make sure nftables is installed and has a basic ruleset loaded to which you can add your banset.
         See the included example configurations for nftables (ex*-ruleset.nft)
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
-  --timeout [TIMEOUT], -t [TIMEOUT]
+  --timeout, -t [TIMEOUT]
                         set the default bantime, e.g. 30m, 1d, etc. or leave blank for permban (default: 2h)
-  --banset BANSET, -s BANSET
-                        set the name of the set to be used for the nftables blacklist (default: ip jamban banset)
+  --banset, -s BANSET   set the name of the set to be used for the nftables blacklist (default: ip jamban banset)
   --unban, -u           select addresses to unban from the server
   --unbanAll            unban all currently banned clients
   --kickListeners, -L   kick all current listeners
   --kickNoNames, -N     kick all clients named No Name
   --list, -l            list clients as metadata input to icecast
   --listRaw, -r         list raw client details
+  --environmentfile, -f [ENVIRONMENTFILE]
+                        path to a systemd environment file containing JSONRPCPORT and JSONRPCSECRETFILE variables
 ```
 #
 - included example configurations for nftables:
