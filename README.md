@@ -1,5 +1,5 @@
 # jamban
-This script works in conjunction with a [patched Jamulus server](https:/dingodoppelt/jamulus/tree/logging)
+This script works in conjunction with a [patched Jamulus server](https:/dingodoppelt/jamulus/tree/release)
 and [nftables](https://www.nftables.org/) to kickban users by IP.
 
 ## requirements
