@@ -24,23 +24,23 @@ def unbanAll(clients):
     for IP in clients:
         clientAction(clients[IP][1], 'delete')
 
-def kickListeners():
+def kickListeners(confFile):
     args.timeout = '60s'
-    listeners = getClients('add')
+    listeners = getClients('add', confFile)
     for x in listeners:
         if (listeners[x][2] == 'Listener'):
             clientAction(listeners[x][1], 'add')
 
-def kickNoNames():
+def kickNoNames(confFile):
     args.timeout = '60s'
-    listeners = getClients('add')
+    listeners = getClients('add', confFile)
     for x in listeners:
         if (listeners[x][0] == 'No Name'):
             clientAction(listeners[x][1], 'add')
 
-def listClients():
+def listClients(confFile):
     metadata = ''
-    clients = getClientsFromRPC()
+    clients = getClientsFromRPC(confFile)
     for x in clients :
         if clients[x][4] != "Streamer" and clients[x][4] != "Recorder" :
             if clients[x][0] != "" :
@@ -55,8 +55,8 @@ def listClients():
         metadata = "waiting+for+musicians....."
     print(metadata[:len(metadata) - 2])
 
-def listRawClients():
-    clients = getClientsFromRPC()
+def listRawClients(confFile):
+    clients = getClientsFromRPC(confFile)
     print(json.dumps(clients))
 
 def getBannedIPs():
@@ -176,12 +176,12 @@ if __name__ == "__main__":
     elif args.unban:
         menu('delete', None)
     elif args.kickListeners:
-        kickListeners()
+        kickListeners(args.environmentfile)
     elif args.kickNoNames:
-        kickNoNames()
+        kickNoNames(args.environmentfile)
     elif args.list:
-        listClients()
+        listClients(args.environmentfile)
     elif args.listRaw:
-        listRawClients()
+        listRawClients(args.environmentfile)
     else:
         menu('add', args.environmentfile)
