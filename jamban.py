@@ -29,24 +29,24 @@ def kickListeners(confFile):
     listeners = getClients('add', confFile)
     for x in listeners:
         if (listeners[x][2] == 'Listener'):
-            clientAction(listeners[x][1], 'add')
+            clientAction( extract_ip(listeners[x][1]), 'add')
 
 def kickNoNames(confFile):
     args.timeout = '60s'
     listeners = getClients('add', confFile)
     for x in listeners:
         if (listeners[x][0] == 'No Name'):
-            clientAction(listeners[x][1], 'add')
+            clientAction( extract_ip(listeners[x][1]), 'add')
 
 def listClients(confFile):
     metadata = ''
     clients = getClientsFromRPC(confFile)
     for x in clients :
-        if clients[x][4] != "Streamer" and clients[x][4] != "Recorder" :
+        if Instruments(clients[x][4]) != "Streamer" and Instruments(clients[x][4]) != "Recorder" :
             if clients[x][0] != "" :
                 metadata += clients[x][0]
-            if clients[x][4] != "-" :
-                metadata += "(" + clients[x][4] + ")"
+            if Instruments(clients[x][4]) != "-" :
+                metadata += "(" + Instruments(clients[x][4]) + ")"
             if clients[x][3] != "-" :
                 metadata += "+from+" + clients[x][3].replace("United Kingdom", "UK").replace("United States","USA")
             metadata += ",+"
@@ -90,7 +90,7 @@ def getConfig(confFile):
         except FileNotFoundError:
             print(f"environment file {confFile} not found.")
     else:
-        __location__ = os.path.dirname(os.readlink(os.path.abspath(__file__)))
+        __location__ = os.path.dirname(os.path.realpath(__file__))
         with open(os.path.join(__location__, 'config.json')) as json_config_file:
             __config__ = json.load(json_config_file)
     return __config__
@@ -109,12 +109,12 @@ def getClientsFromRPC(confFile):
                 s.sendall(authRequest)
                 ackn = s.recv(1024).decode('utf-8')
                 if (ackn == '{"id":"Auth","jsonrpc":"2.0","result":"ok"}\n'):
-                    s.sendall(b'{"id":"Clients","jsonrpc":"2.0","method":"jamulusserver/getClientDetails","params":{}}\n')
+                    s.sendall(b'{"id":"Clients","jsonrpc":"2.0","method":"jamulusserver/getClients","params":{}}\n')
                     dictParsed = json.loads(s.recv(16384))['result']['clients']
                     clientDict={}
                     i=1
                     for client in dictParsed:
-                        clientDict.update({ i: [ client['name'], client['address'].split(':')[0], client['city'], client['country'], client['instr'], client['instrpic'], client['skill'] ] })
+                        clientDict.update({ i: [ client['name'], client['address'], client['city'], client['countryName'], client['instrumentCode'], client['id'], client['skillLevelCode'] ] })
                         i+=1
                     return clientDict
         else:
@@ -128,7 +128,7 @@ def getClients(action, config):
 
 def drawMenu(clientDict):
     for x in clientDict:
-            print((color.BOLD + "  {0:>2}: {1}" + color.END + " ({2})").format(str(x), clientDict[x][0], clientDict[x][1]))
+            print((color.BOLD + "  {0:>2}: {1}" + color.END + " ({2})").format(str(x), clientDict[x][0], extract_ip(clientDict[x][1])))
 
 def menu(action, config):
     clientDict = getClients(action, config)
@@ -143,14 +143,86 @@ def menu(action, config):
         if choice not in range(1, len(clientDict) + 1):
             print("Invalid selection... aborting")
         else:
-            optout = input("Are you sure to apply the action <" + action + "> to " + color.BOLD + clientDict[choice][1] + color.END + "? (Y/n): ")
+            optout = input("Are you sure to apply the action <" + action + "> to " + color.BOLD + extract_ip(clientDict[choice][1]) + color.END + "? (Y/n): ")
             if ( optout == 'Y' ):
-                clientAction(clientDict[choice][1], action)
+                clientAction( extract_ip(clientDict[choice][1]), action)
             else:
                 print("Cancelled by user")
                 exit()
     else:
         print("No entries found... exiting")
+
+def extract_ip(address):
+    ipv6_pattern = r'\[([^\]]+)\](?::\d+)?'
+    ipv4_pattern = r'([^\[]+?)(?::\d+)?$'
+
+    ipv6_match = re.match(ipv6_pattern, address)
+    if ipv6_match:
+        return ipv6_match.group(1)
+
+    ipv4_match = re.match(ipv4_pattern, address)
+    if ipv4_match:
+        return ipv4_match.group(1).split(':')[0]
+
+SkillLevels = [
+    "",
+    "Beginner",
+    "Intermediate",
+    "Expert"
+]
+
+Instruments = [
+    "None",               # 0
+    "Drum Set",           # 1
+    "Djembe",             # 2
+    "Electric Guitar",    # 3
+    "Acoustic Guitar",    # 4
+    "Bass Guitar",        # 5
+    "Keyboard",           # 6
+    "Synthesizer",        # 7
+    "Grand Piano",        # 8
+    "Accordion",          # 9
+    "Vocal",              # 10
+    "Microphone",         # 11
+    "Harmonica",          # 12
+    "Trumpet",            # 13
+    "Trombone",           # 14
+    "French Horn",        # 15
+    "Tuba",               # 16
+    "Saxophone",          # 17
+    "Clarinet",           # 18
+    "Flute",              # 19
+    "Violin",             # 20
+    "Cello",              # 21
+    "Double Bass",        # 22
+    "Recorder",           # 23
+    "Streamer",           # 24
+    "Listener",           # 25
+    "Guitar+Vocal",       # 26
+    "Keyboard+Vocal",     # 27
+    "Bodhran",            # 28
+    "Bassoon",            # 29
+    "Oboe",               # 30
+    "Harp",               # 31
+    "Viola",              # 32
+    "Congas",             # 33
+    "Bongo",              # 34
+    "Vocal Bass",         # 35
+    "Vocal Tenor",        # 36
+    "Vocal Alto",         # 37
+    "Vocal Soprano",      # 38
+    "Banjo",              # 39
+    "Mandolin",           # 40
+    "Ukulele",            # 41
+    "Bass Ukulele",       # 42
+    "Vocal Baritone",     # 43
+    "Vocal Lead",         # 44
+    "Mountain Dulcimer",  # 45
+    "Scratching",         # 46
+    "Rapping",            # 47
+    "Vibraphone",         # 48
+    "Conductor"           # 49
+]
 
 if __name__ == "__main__":
     class color:
