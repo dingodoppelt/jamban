@@ -45,9 +45,9 @@ def listClients(confFile):
         if Instruments[clients[x][4]] != "Streamer" and Instruments[clients[x][4]] != "Recorder" :
             if clients[x][0] != "" :
                 metadata += clients[x][0]
-            if Instruments[clients[x][4]] != "-" :
+            if Instruments[clients[x][4]] != "None" :
                 metadata += "(" + Instruments[clients[x][4]] + ")"
-            if clients[x][3] != "-" :
+            if clients[x][3] != "Default" :
                 metadata += "+from+" + clients[x][3].replace("United Kingdom", "UK").replace("United States","USA")
             metadata += ",+"
     metadata = ' '.join(metadata.split()).replace(" ","+")
