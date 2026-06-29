@@ -42,11 +42,11 @@ def listClients(confFile):
     metadata = ''
     clients = getClientsFromRPC(confFile)
     for x in clients :
-        if Instruments(clients[x][4]) != "Streamer" and Instruments(clients[x][4]) != "Recorder" :
+        if Instruments[clients[x][4]] != "Streamer" and Instruments[clients[x][4]] != "Recorder" :
             if clients[x][0] != "" :
                 metadata += clients[x][0]
-            if Instruments(clients[x][4]) != "-" :
-                metadata += "(" + Instruments(clients[x][4]) + ")"
+            if Instruments[clients[x][4]] != "-" :
+                metadata += "(" + Instruments[clients[x][4]] + ")"
             if clients[x][3] != "-" :
                 metadata += "+from+" + clients[x][3].replace("United Kingdom", "UK").replace("United States","USA")
             metadata += ",+"
