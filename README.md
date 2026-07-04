@@ -3,33 +3,35 @@ This script works in conjunction with a [Jamulus server](https://github.com/jamu
 and [nftables](https://www.nftables.org/) to kickban users by IP.
 
 ## requirements
-1. start the Jamulus server with the rpc server enabled. Run `Jamulus --help` for more infos
+1. start the Jamulus server (version >= 4.0.0) with the RPC server enabled. Run `Jamulus --help` for more infos on how to do that
 2. configure nftables to contain a table, chain and set visible to jamban (see `jamban.py --help` for defaults or below for examples)
 3. the environment variables `$JSONRPCPORT` and `$JSONRPCSECRETFILE` must contain the same values as the Jamulus server was launched with (`--jsonrpcport` and `--jsonrpcsecretfile`)
 #
-- output of "jamban.py --help":
+- output of `jamban.py --help`:
 ```
+$ jamban --help
 usage: jamban [-h] [--timeout [TIMEOUT]] [--banset BANSET] [--unban] [--unbanAll] [--kickListeners] [--kickNoNames] [--list] [--listRaw] [--environmentfile [ENVIRONMENTFILE]]
 
-This script uses nftables to ban clients from patched Jamulus servers.
-Get the patched server @ https://github.com/dingodoppelt/jamulus/tree/release
+This script uses nftables to ban clients from Jamulus servers.
 
         Make sure nftables is installed and has a basic ruleset loaded to which you can add your banset.
         See the included example configurations for nftables (ex*-ruleset.nft)
 
 options:
   -h, --help            show this help message and exit
-  --timeout, -t [TIMEOUT]
+  --timeout [TIMEOUT], -t [TIMEOUT]
                         set the default bantime, e.g. 30m, 1d, etc. or leave blank for permban (default: 2h)
-  --banset, -s BANSET   set the name of the set to be used for the nftables blacklist (default: ip jamban banset)
+  --banset BANSET, -s BANSET
+                        set the name of the set to be used for the nftables blacklist (default: ip jamban banset)
   --unban, -u           select addresses to unban from the server
   --unbanAll            unban all currently banned clients
   --kickListeners, -L   kick all current listeners
   --kickNoNames, -N     kick all clients named No Name
   --list, -l            list clients as metadata input to icecast
   --listRaw, -r         list raw client details
-  --environmentfile, -f [ENVIRONMENTFILE]
+  --environmentfile [ENVIRONMENTFILE], -f [ENVIRONMENTFILE]
                         path to a systemd environment file containing JSONRPCPORT and JSONRPCSECRETFILE variables
+
 ```
 #
 - included example configurations for nftables:
