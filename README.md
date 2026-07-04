@@ -3,8 +3,9 @@ This script works in conjunction with a [Jamulus server](https://github.com/jamu
 and [nftables](https://www.nftables.org/) to kickban users by IP.
 
 ## requirements
-1. start the Jamulus server with the rpc server enabled. Run "Jamulus --help" for more infos
-2. configure nftables to contain a table, chain and set visible to jamban (see "jamban.py --help" for defaults or below for examples)
+1. start the Jamulus server with the rpc server enabled. Run `Jamulus --help` for more infos
+2. configure nftables to contain a table, chain and set visible to jamban (see `jamban.py --help` for defaults or below for examples)
+3. the environment variables `$JSONRPCPORT` and `$JSONRPCSECRETFILE` must contain the same values as the Jamulus server was launched with (`--jsonrpcport` and `--jsonrpcsecretfile`)
 #
 - output of "jamban.py --help":
 ```
